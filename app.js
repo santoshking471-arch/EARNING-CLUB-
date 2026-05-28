@@ -67,7 +67,8 @@ window.switchTab = function(tabId) {
 };
 
 // 4. Sliding Profile Drawer Animators (Tailwind Adaptive Fixes)
-function toggleDrawer(open) {
+// Bas function ke naam ke aage window. laga do
+window.toggleDrawer = function(open) {
     const drawer = document.getElementById('menu-drawer');
     const overlay = document.getElementById('menu-overlay');
     if (drawer && overlay) {
@@ -82,6 +83,7 @@ function toggleDrawer(open) {
         }
     }
 }
+
 
 // 5. Functional Action Event Wireframes
 if(document.getElementById('menu-open-btn')) {
