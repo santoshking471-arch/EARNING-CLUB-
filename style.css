@@ -1,4 +1,3 @@
-/* style.css */
 * {
     margin: 0;
     padding: 0;
@@ -22,44 +21,7 @@ body {
     position: relative;
 }
 
-/* Auth Wrapper Layer */
-.auth-wrapper {
-    position: absolute;
-    inset: 0;
-    z-index: 500;
-    background: radial-gradient(circle at center, #141236 0%, #08090c 100%);
-}
-
-.brand-logo-glow {
-    width: 80px;
-    height: 80px;
-    background: rgba(99, 102, 241, 0.05);
-    border: 1px solid rgba(99, 102, 241, 0.2);
-    border-radius: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 25px rgba(99, 102, 241, 0.15);
-}
-
-.google-btn {
-    background: #ffffff;
-    color: #111318;
-    border: none;
-    padding: 14px;
-    border-radius: 14px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
-}
-.google-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15);
-}
-
-/* Premium Header */
+/* Premium Navigation Header Component */
 .premium-header {
     display: flex;
     justify-content: space-between;
@@ -84,7 +46,6 @@ body {
 .icon-btn {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.06);
-    color: #a0aec0;
     width: 40px;
     height: 40px;
     border-radius: 12px;
@@ -94,7 +55,7 @@ body {
     cursor: pointer;
     transition: all 0.2s;
 }
-.icon-btn:hover { color: #fff; border-color: rgba(255,255,255,0.15); }
+.icon-btn:hover { border-color: rgba(255,255,255,0.15); }
 
 .profile-trigger img {
     width: 36px;
@@ -104,7 +65,7 @@ body {
     border: 1.5px solid #6366f1;
 }
 
-/* Sliding Menu Open Close */
+/* Sidebar Drawer Overlay Engine */
 .menu-overlay {
     position: fixed;
     inset: 0;
@@ -159,15 +120,14 @@ body {
     display: flex; align-items: center; gap: 12px;
 }
 .menu-link:hover { background: rgba(99,102,241,0.05); border-color: rgba(99,102,241,0.2); }
-.menu-link.logout-btn { margin-top: auto; color: #f56565; background: rgba(245,101,101,0.04); border-color: rgba(245,101,101,0.1); }
 
-/* Main Section Framework */
+/* Main Framework Core Grid */
 .main-content { padding: 20px; flex: 1; margin-bottom: 90px; }
 .welcome-section { margin-bottom: 22px; }
 .welcome-section h2 { font-size: 19px; font-weight: 700; letter-spacing: -0.5px; }
 .welcome-section p { color: #718096; font-size: 11px; margin-top: 2px; }
 
-/* Dashboard Glass Container Box */
+/* Metrics Module Card Box Group */
 .dashboard-box {
     background: rgba(255, 255, 255, 0.01);
     border: 1px solid rgba(255, 255, 255, 0.03);
@@ -196,10 +156,9 @@ body {
     background: rgba(13, 14, 20, 0.4); border: 1px solid rgba(255, 255, 255, 0.04);
     border-radius: 20px; padding: 18px;
 }
-.section-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 6px; display: flex; align-items: center;}
 .section-card p { font-size: 11px; color: #718096; margin-bottom: 14px; line-height: 1.6; }
 
-/* Form Elements Input UI */
+/* Interactive Form Core Components */
 .premium-input-group { margin-bottom: 14px; display: flex; flex-direction: column; gap: 5px; }
 .premium-input-group label { font-size: 10px; color: #718096; letter-spacing: 0.5px; }
 .premium-input {
@@ -215,7 +174,7 @@ body {
 }
 .neon-btn:hover { background: #4f46e5; }
 
-/* Dynamic Slim Tasks Row Layout */
+/* Task Row Node Alignment */
 .task-row {
     display: flex; justify-content: space-between; align-items: center;
     background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.03);
@@ -224,14 +183,14 @@ body {
 .task-row:hover { border-color: rgba(99, 102, 241, 0.2); background: rgba(99,102,241,0.02); }
 .task-reward { font-size: 11px; font-weight: 700; color:#22c55e; background:rgba(34,197,94,0.08); padding:4px 10px; border-radius:20px; }
 
-/* Wallet Box Styling */
+/* Liquidity Matrix Interface */
 .wallet-balance-box {
     background: linear-gradient(135deg, #0d0b21 0%, #170721 100%);
     border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 24px; padding: 25px; text-align: center; margin-bottom: 18px;
 }
 .wallet-balance-box h1 { font-size: 30px; font-weight: 700; margin-top: 4px; letter-spacing: -0.5px; }
 
-/* Navigation Tab Bar Modern Slim Style */
+/* System Bottom Navigation Dock */
 .bottom-nav {
     position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
     width: 100%; max-width: 480px; height: 72px; background: rgba(8, 9, 12, 0.85);
@@ -242,5 +201,5 @@ body {
     display: flex; flex-direction: column; align-items: center; background: none; border: none;
     color: #4a5568; cursor: pointer; font-size: 9px; font-weight: 500; gap: 5px; transition: all 0.2s;
 }
-.nav-icon { font-size: 16px; color: inherit; }
+.nav-icon { color: inherit; }
 .nav-item.active { color: #6366f1; }
