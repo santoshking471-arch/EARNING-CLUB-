@@ -100,18 +100,17 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, query, collection, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // FIXME: Apne Firebase project ki details yahan check kar lena
-    Const firebaseConfig = {
-  apiKey: "AIzaSyB9wfUyckilfi9k1utVJPBoUTg9i62GFGM",
-  authDomain: "nexus-94a75.firebaseapp.com",
-  projectId: "nexus-94a75",
-  storageBucket: "nexus-94a75.firebasestorage.app",
-  messagingSenderId: "817223121489",
-  appId: "1:817223121489:web:bf808da433ba87cbb95670",
-  measurementId: "G-KGDL0VWS01"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyB9wfUyckilfi9k1utVJPBoUTg9i62GFGM",
+      authDomain: "nexus-94a75.firebaseapp.com",
+      projectId: "nexus-94a75",
+      storageBucket: "nexus-94a75.firebasestorage.app",
+      messagingSenderId: "817223121489",
+      appId: "1:817223121489:web:bf808da433ba87cbb95670",
+      measurementId: "G-KGDL0VWS01"
+    };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -144,31 +143,41 @@
         return "NEX" + Math.floor(100 + Math.random() * 900) + "K";
     }
 
-    // STRICT REGISTRATION & LOGIN LOGIC FIX
+    // ================= EXPLICIT LOGIN CONTROLLER (CRASH PROOF) =================
     document.getElementById('auth-login-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Default submit refresh block rules
+        
         const email = document.getElementById('login-email').value.trim();
         const password = document.getElementById('login-password').value;
 
+        if(!email || !password) {
+            alert("Please enter both email and password");
+            return;
+        }
+
         try {
-            // First check database rule condition
-            const q = query(collection(db, "users"), where("email", "==", email));
-            const querySnapshot = await getDocs(q);
-
-            if (querySnapshot.empty) {
-                alert("User not found");
-                return;
+            // Direct Firebase Login Test (Bina database check kiye, taaki permission issue na aaye)
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            
+            // Success hone par direct home.html par bhejo
+            if(userCredential.user) {
+                window.location.href = "home.html";
             }
-
-            await signInWithEmailAndPassword(auth, email, password);
-            window.location.href = "home.html";
-
         } catch (error) {
-            alert("Login fail : pls check your email and password");
-            console.error(error.message);
+            console.error("Firebase Login Error Details: ", error.code, error.message);
+            
+            // Strict Validation Messages as per your request
+            if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
+                alert("Login fail : pls check your email and password");
+            } else if (error.code === 'auth/user-not-found') {
+                alert("user not found");
+            } else {
+                alert("Login fail : pls check your email and password");
+            }
         }
     });
 
+    // ================= REGISTER CONTROLLER =================
     document.getElementById('auth-register-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const name = document.getElementById('reg-name').value.trim();
@@ -208,5 +217,6 @@
         }
     });
 </script>
+
 </body>
 </html>
