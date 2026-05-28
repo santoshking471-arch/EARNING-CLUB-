@@ -50,7 +50,8 @@
     <div class="w-full box-border mb-10">
         
         <!-- ================= LOGIN FORM TAB ================= -->
-        <form id="auth-login-form" class="flex flex-col gap-4 w-full box-border">
+        <form id="auth-login-form" onsubmit="return false;" class="flex flex-col gap-4 w-full box-border">
+
             <div class="premium-input-group w-full">
                 <label>Registered Email String</label>
                 <input type="email" id="login-email" placeholder="name@domain.com" class="premium-input w-full" required>
