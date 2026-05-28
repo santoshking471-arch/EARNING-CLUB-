@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus - Authentication</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-container justify-center px-6">
+    
+    <div class="text-center mb-8">
+        <div class="header-title text-2xl tracking-[6px] mb-1">NEXUS</div>
+        <p class="text-[11px] text-gray-500 uppercase tracking-wider">Secure Access Node</p>
+    </div>
+
+    <div class="flex bg-white/5 p-1 rounded-xl border border-white/5 mb-6">
+        <button id="tab-btn-login" class="flex-1 py-2.5 text-xs font-semibold rounded-lg text-indigo-400 bg-white/5 transition-all" onclick="toggleAuthTab('login')">
+            Login
+        </button>
+        <button id="tab-btn-register" class="flex-1 py-2.5 text-xs font-semibold rounded-lg text-gray-400 transition-all" onclick="toggleAuthTab('register')">
+            Register
+        </button>
+    </div>
+
+    <form id="auth-login-form" class="flex flex-col gap-4">
+        <div class="premium-input-group">
+            <label>Registered Email String</label>
+            <input type="email" id="login-email" placeholder="name@domain.com" class="premium-input" required>
+        </div>
+        <div class="premium-input-group">
+            <label>Account Password</label>
+            <input type="password" id="login-password" placeholder="••••••••" class="premium-input" required>
+        </div>
+        <button type="submit" class="neon-btn mt-2">Confirm & Connect</button>
+    </form>
+
+    <form id="auth-register-form" class="flex flex-col gap-4 hidden">
+        <div class="premium-input-group">
+            <label>Full Name</label>
+            <input type="text" id="reg-name" placeholder="Enter Full Name" class="premium-input" required>
+        </div>
+        <div class="premium-input-group">
+            <label>Enter Email Address</label>
+            <input type="email" id="reg-email" placeholder="name@domain.com" class="premium-input" required>
+        </div>
+        <div class="premium-input-group">
+            <label>Setup Secure Password</label>
+            <input type="password" id="reg-password" placeholder="Min 6 characters" class="premium-input" required>
+        </div>
+        <div class="premium-input-group">
+            <label>Confirm Password</label>
+            <input type="password" id="reg-confirm-password" placeholder="Repeat password" class="premium-input" required>
+        </div>
+        <button type="submit" class="neon-btn mt-2">Save & Continue</button>
+    </form>
+
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // FIXME: Apne Firebase project ki details yahan paste kijiye
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    // Initialize Firebase Services
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // 1. TABS TOGGLE FUNCTION ENGINE
+    window.toggleAuthTab = function(mode) {
+        const loginForm = document.getElementById('auth-login-form');
+        const regForm = document.getElementById('auth-register-form');
+        const loginBtn = document.getElementById('tab-btn-login');
+        const regBtn = document.getElementById('tab-btn-register');
+
+        if (mode === 'login') {
+            loginForm.classList.remove('hidden');
+            regForm.classList.add('hidden');
+            loginBtn.classList.add('bg-white/5', 'text-indigo-400');
+            loginBtn.classList.remove('text-gray-400');
+            regBtn.classList.remove('bg-white/5', 'text-indigo-400');
+            regBtn.classList.add('text-gray-400');
+        } else {
+            regForm.classList.remove('hidden');
+            loginForm.classList.add('hidden');
+            regBtn.classList.add('bg-white/5', 'text-indigo-400');
+            regBtn.classList.remove('text-gray-400');
+            loginBtn.classList.remove('bg-white/5', 'text-indigo-400');
+            loginBtn.classList.add('text-gray-400');
+        }
+    }
+
+    // generate random referral IDs like NEX123X
+    function generateRefCode() {
+        return "NEX" + Math.floor(100 + Math.random() * 900) + "K";
+    }
+
+    // 2. LOGIN PROCESSOR (Strict Rules)
+    document.getElementById('auth-login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value.trim();
+        const password = document.getElementById('login-password').value;
+
+        try {
+            // Rule 1: Pehle check karo user firestore me exist karta hai ya nahi
+            const q = query(collection(db, "users"), where("email", "==", email));
+            const querySnapshot = await getDocs(q);
+
+            if (querySnapshot.empty) {
+                alert("User not found");
+                return;
+            }
+
+            // Rule 2: Agar user database me hai, toh authentication test execute karo
+            await signInWithEmailAndPassword(auth, email, password);
+            window.location.href = "index.html"; // Redirect to dashboard
+
+        } catch (error) {
+            // Rule 3: Agar email/password match nahi hua
+            alert("Login fail : pls check your email and password");
+            console.error(error.message);
+        }
+    });
+
+    // 3. REGISTER PROCESSOR (Strict Rules)
+    document.getElementById('auth-register-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('reg-name').value.trim();
+        const email = document.getElementById('reg-email').value.trim();
+        const password = document.getElementById('reg-password').value;
+        const confirmPassword = document.getElementById('reg-confirm-password').value;
+
+        // Frontend Check for confirmation match
+        if (password !== confirmPassword) {
+            alert("Passwords do not match!");
+            return;
+        }
+
+        try {
+            // Rule 1: Check if user email already exists in Firestore users group
+            const q = query(collection(db, "users"), where("email", "==", email));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                alert("User already registered");
+                return;
+            }
+
+            // Rule 2: Agar nahi hai, toh create account karo
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            // Rule 3: Firestore Database me complete data secure save karo
+            await setDoc(doc(db, "users", user.uid), {
+                uid: user.uid,
+                fullName: name,
+                email: email,
+                referralId: generateRefCode(),
+                todayEarning: 0,
+                totalEarning: 0,
+                completed: 0,
+                pending: 0,
+                walletBalance: 0
+            });
+
+            // Auto routing on registration completion
+            window.location.href = "index.html";
+
+        } catch (error) {
+            alert("Registration failed: " + error.message);
+        }
+    });
+</script>
+</body>
+</html>
