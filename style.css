@@ -171,3 +171,14 @@ body {
     color: #4a5568; cursor: pointer; font-size: 9px; font-weight: 500; gap: 5px;
 }
 .nav-item.active { color: #6366f1; }
+
+
+/* Input design sync up rules for login container view */
+.premium-input-group { margin-bottom: 14px; display: flex; flex-direction: column; gap: 5px; text-align: left; }
+.premium-input-group label { font-size: 10px; color: #718096; letter-spacing: 0.5px; }
+.premium-input {
+    background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 12px; border-radius: 12px; color: #fff; font-size: 12px; outline: none; transition: all 0.2s;
+}
+.premium-input:focus { border-color: #6366f1; background: rgba(99,102,241,0.01); }
+
