@@ -7,12 +7,28 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Mobile Scale Override and Centering Engine */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: #08090c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+            touch-action: manipulation;
+        }
+    </style>
 </head>
 <body>
 
-<div class="app-container justify-center px-5 min-h-screen">
+<div class="app-container justify-between px-6 py-8 min-h-screen w-full max-w-[480px] mx-auto flex flex-col box-border">
     
-    <div class="w-full max-w-[390px] mx-auto flex flex-col justify-center box-border">
+    <div class="w-full flex flex-col justify-center my-auto box-border">
         
         <div class="text-center mb-6">
             <div class="header-title text-2xl tracking-[6px] mb-1">NEXUS</div>
@@ -60,6 +76,14 @@
             <button type="submit" class="neon-btn mt-2 w-full">Save & Continue</button>
         </form>
 
+    </div>
+
+    <div class="w-full text-center pt-6 border-t border-white/5 mt-auto box-border">
+        <h4 class="text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-2">Help & Support</h4>
+        <div class="flex flex-col gap-1 text-xs text-gray-500">
+            <p>Contact Email: <a href="mailto:santoshking471@gmail.com" class="text-indigo-400 hover:underline">santoshking471@gmail.com</a></p>
+            <p>WhatsApp: <a href="https://wa.me/918817409243" target="_blank" class="text-emerald-400 hover:underline">+91 88174 09243</a></p>
+        </div>
     </div>
 
 </div>
