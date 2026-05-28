@@ -6,124 +6,148 @@
     <title>Nexus - Premium Refer & Earn</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="app-container">
 
-    <header class="premium-header">
-        <button id="menu-open-btn" class="icon-btn">☰</button>
-        <div class="header-title">NEXUS</div>
-        <button id="profile-trigger-btn" class="icon-btn profile-trigger">
-            <img id="header-avatar" src="https://via.placeholder.com/150" alt="Profile">
-        </button>
-    </header>
-
-    <div id="menu-overlay" class="menu-overlay"></div>
-    <div id="menu-drawer" class="menu-drawer">
-        <div class="menu-profile">
-            <img id="menu-avatar" src="https://via.placeholder.com/150" alt="User">
-            <h3 id="menu-name">Santosh Kushwaha</h3>
-            <p id="menu-email">santosh@example.com</p>
+    <div id="auth-screen" class="auth-wrapper flex flex-col items-center justify-center p-6 text-center">
+        <div class="brand-logo-glow mb-2">
+            <i class="fa-solid fa-layer-group text-4xl text-indigo-500"></i>
         </div>
-        <nav class="menu-items">
-            <button class="menu-link active" onclick="switchTab('home')">🏠 Home Dashboard</button>
-            <button class="menu-link text-emerald-400" onclick="window.open('https://t.me/your_support')">💬 Contact Support</button>
-            <button id="logout-btn" class="menu-link logout-btn"> Navarre 🚪 Log Out</button>
-        </nav>
+        <h1 class="text-3xl font-extrabold tracking-widest text-indigo-500 mb-1">NEXUS</h1>
+        <p class="text-gray-400 text-xs mb-12">Refer, Complete Tasks & Earn Real Cash</p>
+        <button id="google-login-btn" class="w-full google-btn flex items-center justify-center gap-3">
+            <i class="fa-brands fa-google text-lg"></i>
+            <span>Continue with Google</span>
+        </button>
     </div>
 
-    <main class="main-content">
+    <div id="app-wrapper" class="hidden flex flex-col flex-grow">
         
-        <section id="tab-home" class="tab-content">
-            <div class="welcome-section">
-                <h2>Hey, <span id="welcome-name">User</span>! 👋</h2>
-                <p>Your Code: <strong id="my-ref-code" class="text-indigo-400">NEX99K</strong></p>
-            </div>
+        <header class="premium-header">
+            <button id="menu-open-btn" class="icon-btn">
+                <i class="fa-solid fa-bars-staggered"></i>
+            </button>
+            <div class="header-title">NEXUS</div>
+            <a href="profile.html" class="icon-btn profile-trigger">
+                <img id="header-avatar" src="" alt="Profile">
+            </a>
+        </header>
 
-            <div class="dashboard-box">
-                <div class="stats-grid">
-                    <div class="premium-card card-earning">
-                        <span class="card-label">Today Earning</span>
-                        <span id="stat-today" class="card-value text-green">₹0</span>
-                    </div>
-                    <div class="premium-card card-total">
-                        <span class="card-label">Total Earning</span>
-                        <span id="stat-total" class="card-value text-purple">₹0</span>
-                    </div>
-                    <div class="premium-card">
-                        <span class="card-label">Completed Tasks</span>
-                        <span id="stat-done" class="card-value text-blue">0</span>
-                    </div>
-                    <div class="premium-card">
-                        <span class="card-label">Pending Tasks</span>
-                        <span id="stat-pending" class="card-value text-amber">0</span>
+        <div id="menu-overlay" class="menu-overlay"></div>
+        <div id="menu-drawer" class="menu-drawer">
+            <div class="menu-profile">
+                <img id="menu-avatar" src="" alt="User">
+                <h3 id="menu-name">---</h3>
+                <p id="menu-email">---</p>
+            </div>
+            <nav class="menu-items">
+                <button class="menu-link" onclick="switchTab('home')">
+                    <i class="fa-solid fa-house-chimney text-indigo-400"></i> Dashboard
+                </button>
+                <button class="menu-link" onclick="window.open('https://t.me/your_support', '_blank')">
+                    <i class="fa-brands fa-telegram text-emerald-400"></i> Live Support
+                </button>
+                <button id="logout-btn" class="menu-link logout-btn">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Disconnect Account
+                </button>
+            </nav>
+        </div>
+
+        <main class="main-content">
+            
+            <section id="tab-home" class="tab-content">
+                <div class="welcome-section">
+                    <h2>Welcome Back, <span id="welcome-name">User</span>!</h2>
+                    <p>Referral ID: <strong id="my-ref-code" class="text-indigo-400 font-mono tracking-wide">---</strong></p>
+                </div>
+
+                <div class="dashboard-box">
+                    <div class="stats-grid">
+                        <div class="premium-card card-earning">
+                            <span class="card-label"><i class="fa-solid fa-wallet text-emerald-400 mr-1.5"></i> Today Earning</span>
+                            <span id="stat-today" class="card-value text-green">₹0</span>
+                        </div>
+                        <div class="premium-card card-total">
+                            <span class="card-label"><i class="fa-solid fa-chart-line text-purple-400 mr-1.5"></i> Total Earning</span>
+                            <span id="stat-total" class="card-value text-purple">₹0</span>
+                        </div>
+                        <div class="premium-card">
+                            <span class="card-label"><i class="fa-solid fa-circle-check text-blue-400 mr-1.5"></i> Completed</span>
+                            <span id="stat-done" class="card-value text-blue">0</span>
+                        </div>
+                        <div class="premium-card">
+                            <span class="card-label"><i class="fa-solid fa-hourglass-half text-amber-400 mr-1.5"></i> Pending</span>
+                            <span id="stat-pending" class="card-value text-amber">0</span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="section-card">
-                <h3>🚀 Invite Friend & Earn</h3>
-                <p>Share your link and earn real rewards instantly when they sign up.</p>
-                <button id="copy-link-btn" class="neon-btn text-xs py-2.5">Copy Invite Link</button>
-            </div>
-        </section>
-
-        <section id="tab-tasks" class="tab-content hidden">
-            <div class="welcome-section">
-                <h2>🎯 Available Tasks</h2>
-                <p>Complete tasks to load wallet balance.</p>
-            </div>
-            <div id="tasks-list" class="flex flex-col gap-3">
+                <div class="section-card">
+                    <h3><i class="fa-solid fa-share-nodes text-indigo-400 mr-1.5"></i> Network Expansion</h3>
+                    <p>Distribute your onboarding reference link to harvest commission payouts onto your dashboard profile.</p>
+                    <button id="copy-link-btn" class="neon-btn text-xs py-2.5">Copy Link Array</button>
                 </div>
-        </section>
+            </section>
 
-        <section id="tab-activity" class="tab-content hidden">
-            <div class="welcome-section">
-                <h2>📊 My Activity</h2>
-                <p>Track your audit history logs.</p>
-            </div>
-            <div class="section-card text-center text-gray-400 text-sm py-10">
-                No recent activity logs found.
-            </div>
-        </section>
-
-        <section id="tab-wallet" class="tab-content hidden">
-            <div class="wallet-balance-box">
-                <span class="card-label" style="color: rgba(255,255,255,0.6)">Withdrawable Balance</span>
-                <h1 id="wallet-balance" class="text-emerald-400">₹0</h1>
-            </div>
-            <div class="section-card">
-                <h3>💸 Request Cash Out</h3>
-                <div class="premium-input-group">
-                    <label>Amount (₹)</label>
-                    <input id="withdraw-amount" type="number" placeholder="Min ₹100" class="premium-input">
+            <section id="tab-tasks" class="tab-content hidden">
+                <div class="welcome-section">
+                    <h2>🎯 Live Assignments</h2>
+                    <p>Fulfill open jobs to clear rewards onto wallet assets.</p>
                 </div>
-                <div class="premium-input-group">
-                    <label>UPI ID</label>
-                    <input id="withdraw-upi" type="text" placeholder="username@upi" class="premium-input">
+                <div id="tasks-list" class="flex flex-col gap-3"></div>
+            </section>
+
+            <section id="tab-activity" class="tab-content hidden">
+                <div class="welcome-section">
+                    <h2>📊 System Audit History</h2>
+                    <p>Track secure ledger events inside your node profiles.</p>
                 </div>
-                <button id="withdraw-submit-btn" class="neon-btn">Submit Withdraw Request</button>
-            </div>
-        </section>
+                <div class="section-card text-center text-gray-500 text-xs py-12">
+                    <i class="fa-solid fa-shield-halved text-2xl mb-2 block text-gray-600"></i>
+                    No ledger entries flagged under your account security group.
+                </div>
+            </section>
 
-    </main>
+            <section id="tab-wallet" class="tab-content hidden">
+                <div class="wallet-balance-box">
+                    <span class="card-label">Available Liquidity</span>
+                    <h1 id="wallet-balance" class="text-emerald-400">₹0</h1>
+                </div>
+                <div class="section-card">
+                    <h3><i class="fa-solid fa-money-bill-transfer text-indigo-400 mr-1.5"></i> Asset Redemption</h3>
+                    <div class="premium-input-group">
+                        <label>Target Amount (₹)</label>
+                        <input id="withdraw-amount" type="number" placeholder="Min ₹100" class="premium-input">
+                    </div>
+                    <div class="premium-input-group">
+                        <label>Unified Payments Interface (UPI) String</label>
+                        <input id="withdraw-upi" type="text" placeholder="handle@bankstring" class="premium-input">
+                    </div>
+                    <button id="withdraw-submit-btn" class="neon-btn">Execute Distribution</button>
+                </div>
+            </section>
 
-    <nav class="bottom-nav">
-        <button id="btn-home" class="nav-item active" onclick="switchTab('home')">
-            <span class="nav-icon">🏠</span><span>Home</span>
-        </button>
-        <button id="btn-tasks" class="nav-item" onclick="switchTab('tasks')">
-            <span class="nav-icon">🎯</span><span>Tasks</span>
-        </button>
-        <button id="btn-activity" class="nav-item" onclick="switchTab('activity')">
-            <span class="nav-icon">📊</span><span>Activity</span>
-        </button>
-        <button id="btn-wallet" class="nav-item" onclick="switchTab('wallet')">
-            <span class="nav-icon">💼</span><span>Wallet</span>
-        </button>
-    </nav>
+        </main>
+
+        <nav class="bottom-nav">
+            <button id="btn-home" class="nav-item active" onclick="switchTab('home')">
+                <i class="fa-solid fa-house nav-icon"></i><span>Home</span>
+            </button>
+            <button id="btn-tasks" class="nav-item" onclick="switchTab('tasks')">
+                <i class="fa-solid fa-crosshairs nav-icon"></i><span>Tasks</span>
+            </button>
+            <button id="btn-activity" class="nav-item" onclick="switchTab('activity')">
+                <i class="fa-solid fa-chart-simple nav-icon"></i><span>Activity</span>
+            </button>
+            <button id="btn-wallet" class="nav-item" onclick="switchTab('wallet')">
+                <i class="fa-solid fa-wallet nav-icon"></i><span>Wallet</span>
+            </button>
+        </nav>
+    </div>
 
 </div>
 
