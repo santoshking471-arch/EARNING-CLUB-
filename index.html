@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nexus - Authentication</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
         html, body {
@@ -49,9 +49,8 @@
     <!-- MIDDLE SECTION: COMPACT FORMS -->
     <div class="w-full box-border mb-10">
         
-        <!-- ================= LOGIN FORM TAB ================= -->
+        <!-- ================= LOGIN FORM TAB (RELOAD FIXED HERE) ================= -->
         <form id="auth-login-form" onsubmit="return false;" class="flex flex-col gap-4 w-full box-border">
-
             <div class="premium-input-group w-full">
                 <label>Registered Email String</label>
                 <input type="email" id="login-email" placeholder="name@domain.com" class="premium-input w-full" required>
@@ -64,7 +63,7 @@
         </form>
 
         <!-- ================= REGISTER FORM TAB ================= -->
-        <form id="auth-register-form" class="flex flex-col gap-4 w-full box-border hidden">
+        <form id="auth-register-form" onsubmit="return false;" class="flex flex-col gap-4 w-full box-border hidden">
             <div class="premium-input-group w-full">
                 <label>Full Name</label>
                 <input type="text" id="reg-name" placeholder="Enter Full Name" class="premium-input w-full" required>
@@ -103,15 +102,15 @@
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, query, collection, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+    // FIXME: Apne Firebase project ki details yahan check kar lena
     const firebaseConfig = {
-  apiKey: "AIzaSyB9wfUyckilfi9k1utVJPBoUTg9i62GFGM",
-  authDomain: "nexus-94a75.firebaseapp.com",
-  projectId: "nexus-94a75",
-  storageBucket: "nexus-94a75.firebasestorage.app",
-  messagingSenderId: "817223121489",
-  appId: "1:817223121489:web:bf808da433ba87cbb95670",
-  measurementId: "G-KGDL0VWS01"
-};
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -144,12 +143,14 @@
         return "NEX" + Math.floor(100 + Math.random() * 900) + "K";
     }
 
+    // STRICT REGISTRATION & LOGIN LOGIC FIX
     document.getElementById('auth-login-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('login-email').value.trim();
         const password = document.getElementById('login-password').value;
 
         try {
+            // First check database rule condition
             const q = query(collection(db, "users"), where("email", "==", email));
             const querySnapshot = await getDocs(q);
 
@@ -159,7 +160,7 @@
             }
 
             await signInWithEmailAndPassword(auth, email, password);
-            window.location.href = "index.html";
+            window.location.href = "home.html";
 
         } catch (error) {
             alert("Login fail : pls check your email and password");
@@ -180,14 +181,6 @@
         }
 
         try {
-            const q = query(collection(db, "users"), where("email", "==", email));
-            const querySnapshot = await getDocs(q);
-
-            if (!querySnapshot.empty) {
-                alert("User already registered");
-                return;
-            }
-
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
@@ -206,7 +199,11 @@
             window.location.href = "home.html";
 
         } catch (error) {
-            alert("Registration failed: " + error.message);
+            if (error.code === 'auth/email-already-in-use') {
+                alert("User already registered");
+            } else {
+                alert("Registration failed: " + error.message);
+            }
         }
     });
 </script>
