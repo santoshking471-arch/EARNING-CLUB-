@@ -8,52 +8,49 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Strict Viewport Lock: No Scroll Allowed */
         html, body {
-            height: 100vh;
-            height: -webkit-fill-available;
             margin: 0;
             padding: 0;
             background: #08090c;
-            overflow: hidden !important;
-            position: fixed;
             width: 100%;
+            min-height: 100vh;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
-            touch-action: none;
+            -webkit-text-size-adjust: 100%;
+            touch-action: manipulation;
         }
     </style>
 </head>
 <body>
 
-<!-- FIXED MAIN CONTAINER (100% Heights Inside Mobile Bounds) -->
-<div class="w-full max-w-[420px] h-screen flex flex-col justify-between px-5 py-4 box-border relative">
+<!-- COMPACT SCROLL-SAFE CONTAINER -->
+<div class="w-full max-w-[420px] flex flex-col px-5 pt-8 pb-12 box-border">
     
     <!-- TOP SECTION: LOGO + TABS -->
-    <div class="w-full box-border pt-2">
+    <div class="w-full box-border">
         <!-- BRAND LOGO HEADER -->
-        <div class="text-center mb-4">
-            <div class="header-title text-xl tracking-[5px] mb-0.5">NEXUS</div>
-            <p class="text-[9px] text-gray-500 uppercase tracking-wider">Secure Access Node</p>
+        <div class="text-center mb-6">
+            <div class="header-title text-2xl tracking-[5px] mb-1">NEXUS</div>
+            <p class="text-[10px] text-gray-500 uppercase tracking-wider">Secure Access Node</p>
         </div>
 
         <!-- AUTH TABS SWITCHER -->
-        <div class="flex bg-white/5 p-1 rounded-xl border border-white/5 mb-4 w-full box-border">
-            <button id="tab-btn-login" class="flex-1 py-2 text-xs font-semibold rounded-lg text-indigo-400 bg-white/5 transition-all cursor-pointer" onclick="toggleAuthTab('login')">
+        <div class="flex bg-white/5 p-1 rounded-xl border border-white/5 mb-8 w-full box-border">
+            <button id="tab-btn-login" class="flex-1 py-2.5 text-xs font-semibold rounded-lg text-indigo-400 bg-white/5 transition-all cursor-pointer" onclick="toggleAuthTab('login')">
                 Login
             </button>
-            <button id="tab-btn-register" class="flex-1 py-2 text-xs font-semibold rounded-lg text-gray-400 transition-all cursor-pointer" onclick="toggleAuthTab('register')">
+            <button id="tab-btn-register" class="flex-1 py-2.5 text-xs font-semibold rounded-lg text-gray-400 transition-all cursor-pointer" onclick="toggleAuthTab('register')">
                 Register
             </button>
         </div>
     </div>
 
     <!-- MIDDLE SECTION: COMPACT FORMS -->
-    <div class="w-full flex-grow flex flex-col justify-center box-border my-auto">
+    <div class="w-full box-border mb-10">
         
         <!-- ================= LOGIN FORM TAB ================= -->
-        <form id="auth-login-form" class="flex flex-col gap-3 w-full box-border">
+        <form id="auth-login-form" class="flex flex-col gap-4 w-full box-border">
             <div class="premium-input-group w-full">
                 <label>Registered Email String</label>
                 <input type="email" id="login-email" placeholder="name@domain.com" class="premium-input w-full" required>
@@ -62,11 +59,11 @@
                 <label>Account Password</label>
                 <input type="password" id="login-password" placeholder="••••••••" class="premium-input w-full" required>
             </div>
-            <button type="submit" class="neon-btn mt-1.5 w-full py-2.5">Confirm & Connect</button>
+            <button type="submit" class="neon-btn mt-3 w-full py-3">Confirm & Connect</button>
         </form>
 
         <!-- ================= REGISTER FORM TAB ================= -->
-        <form id="auth-register-form" class="flex flex-col gap-2.5 w-full box-border hidden">
+        <form id="auth-register-form" class="flex flex-col gap-4 w-full box-border hidden">
             <div class="premium-input-group w-full">
                 <label>Full Name</label>
                 <input type="text" id="reg-name" placeholder="Enter Full Name" class="premium-input w-full" required>
@@ -83,15 +80,15 @@
                 <label>Confirm Password</label>
                 <input type="password" id="reg-confirm-password" placeholder="Repeat password" class="premium-input w-full" required>
             </div>
-            <button type="submit" class="neon-btn mt-1.5 w-full py-2.5">Save & Continue</button>
+            <button type="submit" class="neon-btn mt-3 w-full py-3">Save & Continue</button>
         </form>
 
     </div>
 
-    <!-- BOTTOM SECTION: FIXED INTEGRATED HELP & SUPPORT -->
-    <div class="w-full text-center pt-3 border-t border-white/5 pb-2 box-border">
-        <h4 class="text-[9px] font-semibold text-gray-400 uppercase tracking-widest mb-1">Help & Support</h4>
-        <div class="flex flex-col gap-0.5 text-[11px] text-gray-500">
+    <!-- BOTTOM SECTION: VISIBLE HELP & SUPPORT -->
+    <div class="w-full text-center pt-5 border-t border-white/5 box-border mt-2">
+        <h4 class="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mb-2">Help & Support</h4>
+        <div class="flex flex-col gap-1 text-xs text-gray-500">
             <p>Email: <a href="mailto:santoshking471@gmail.com" class="text-indigo-400 hover:underline">santoshking471@gmail.com</a></p>
             <p>WhatsApp: <a href="https://wa.me/918817409243" target="_blank" class="text-emerald-400 hover:underline">+91 88174 09243</a></p>
         </div>
