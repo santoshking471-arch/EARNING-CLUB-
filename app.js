@@ -1,9 +1,9 @@
 // app.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore, doc, onSnapshot, collection, getDocs, addDoc, serverTimestamp, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, doc, onSnapshot, collection, getDocs, addDoc, serverTimestamp, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// 1. APNE CONFIG SE REPLACE KAREIN
+// REPLACE WITH REAL ACCOUNT FIREBASE CONFIG BLOCK
 const firebaseConfig = {
     apiKey: "YOUR_API_KEY",
     authDomain: "YOUR_AUTH_DOMAIN",
@@ -20,7 +20,40 @@ const provider = new GoogleAuthProvider();
 
 let localUserRecord = null;
 
-// 2. TABS MANAGEMENT ENGINE
+// 1. CLEAN AUTO STATE SYNCHRONIZATION (No Popups)
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // Safe Switch Layers
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('app-wrapper').classList.remove('hidden');
+
+        // Setup Firestore Data Listener Node
+        onSnapshot(doc(db, "users", user.uid), (snap) => {
+            if (snap.exists()) {
+                localUserRecord = snap.data();
+                renderMetrics(user, localUserRecord);
+            } else {
+                provisionNewProfile(user);
+            }
+        });
+        syncAvailableTasks();
+    } else {
+        // Show clean Auth layer if unauthenticated
+        document.getElementById('auth-screen').classList.remove('hidden');
+        document.getElementById('app-wrapper').classList.add('hidden');
+    }
+});
+
+// TRIGGER SYSTEM GATE LOGIN ON INTENT BUTTON CLICK ONLY
+document.getElementById('google-login-btn').addEventListener('click', async () => {
+    try { 
+        await signInWithPopup(auth, provider); 
+    } catch (e) { 
+        alert("Authentication Process Faulted. Retry."); 
+    }
+});
+
+// TAB LAYOUT ACTION SWITCHER
 window.switchTab = function(tabId) {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
     document.getElementById('tab-' + tabId).classList.remove('hidden');
@@ -30,7 +63,7 @@ window.switchTab = function(tabId) {
     toggleDrawer(false);
 };
 
-// 3. SLIDING DRAWER LOGIC
+// SLIDING PANEL MECHANICS
 function toggleDrawer(open) {
     const drawer = document.getElementById('menu-drawer');
     const overlay = document.getElementById('menu-overlay');
@@ -44,27 +77,8 @@ function toggleDrawer(open) {
 }
 document.getElementById('menu-open-btn').addEventListener('click', () => toggleDrawer(true));
 document.getElementById('menu-overlay').addEventListener('click', () => toggleDrawer(false));
-document.getElementById('profile-trigger-btn').addEventListener('click', () => toggleDrawer(true));
 
-// 4. LISTEN USER REAL-TIME ACCOUNT STATUS
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        onSnapshot(doc(db, "users", user.uid), (snap) => {
-            if (snap.exists()) {
-                localUserRecord = snap.data();
-                renderMetrics(user, localUserRecord);
-            } else {
-                provisionNewProfile(user);
-            }
-        });
-        syncAvailableTasks();
-    } else {
-        // Agar user login nahi hai, toh unhe direct login window pop-up karwayein
-        signInWithPopup(auth, provider).catch(() => console.log("Login Dismissed"));
-    }
-});
-
-// 5. PROVISION PROFILE FOR FRESH USERS
+// GENERATE NEW ENROLLED USER PROFILES
 async function provisionNewProfile(user) {
     const urlParams = new URLSearchParams(window.location.search);
     const sponsorRef = urlParams.get('ref') || null;
@@ -77,7 +91,7 @@ async function provisionNewProfile(user) {
     });
 }
 
-// 6. RENDER DATA TO UI
+// FORMAT METRICS INTERFACE DATA
 function renderMetrics(authObj, dbObj) {
     document.getElementById('header-avatar').src = authObj.photoURL;
     document.getElementById('menu-avatar').src = authObj.photoURL;
@@ -93,7 +107,7 @@ function renderMetrics(authObj, dbObj) {
     document.getElementById('wallet-balance').innerText = "₹" + dbObj.walletBalance;
 }
 
-// 7. FETCH AND RENDER ACTIVE TASKS
+// SYNC LIVE JOBS STREAM DATA
 async function syncAvailableTasks() {
     const snap = await getDocs(collection(db, "tasks"));
     const container = document.getElementById('tasks-list');
@@ -102,13 +116,16 @@ async function syncAvailableTasks() {
         const item = doc.data();
         container.innerHTML += `
             <div onclick="window.open('${item.link}', '_blank')" class="task-row">
-                <div><h4 class="text-sm font-semibold mb-0.5">${item.title}</h4><p class="text-[11px] text-gray-400">${item.desc}</p></div>
+                <div>
+                    <h4 class="text-xs font-semibold mb-0.5"><i class="fa-solid fa-arrow-up-right-from-square text-indigo-400 mr-1.5 text-[10px]"></i> ${item.title}</h4>
+                    <p class="text-[10px] text-gray-500">${item.desc}</p>
+                </div>
                 <div class="task-reward">+₹${item.reward}</div>
             </div>`;
     });
 }
 
-// 8. WITHDRAW REQUEST DISPATCHER
+// WITHDRAW REQUEST DISPATCHER
 document.getElementById('withdraw-submit-btn').addEventListener('click', async () => {
     const amt = parseInt(document.getElementById('withdraw-amount').value);
     const upi = document.getElementById('withdraw-upi').value;
@@ -121,18 +138,17 @@ document.getElementById('withdraw-submit-btn').addEventListener('click', async (
         amount: amt, upiId: upi, status: "PENDING", createdAt: serverTimestamp()
     });
 
-    alert("Cash Out Request Routed to Admin System! 🚀");
+    alert("Redemption Request Route Successful!");
     document.getElementById('withdraw-amount').value = "";
     document.getElementById('withdraw-upi').value = "";
 });
 
-// 9. COPY INVITE LOGIC
+// DISCONNECT DISPATCH
+document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+
+// REGISTER REFERRAL LINK LINKAGE RUNNER
 document.getElementById('copy-link-btn').addEventListener('click', () => {
     const link = window.location.origin + window.location.pathname + "?ref=" + localUserRecord.referralCode;
     navigator.clipboard.writeText(link);
-    alert("Premium Referral Link Copied! 🚀");
+    alert("Referral Endpoint Copied onto Local Clipboard Buffer.");
 });
-
-// LOGOUT TRIGGER
-document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
-
