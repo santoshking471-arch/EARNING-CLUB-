@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nexus Premium Node Hub</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: #06070a;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            font-family: 'Poppins', sans-serif;
+            -webkit-text-size-adjust: 100%;
+            touch-action: manipulation;
+        }
+        /* Custom Premium Glassmorphism & Neon Shadows */
+        .premium-glow {
+            box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.15);
+        }
+        .nav-item.active {
+            color: #6366f1 !important;
+        }
+        .nav-item.active svg {
+            stroke: #6366f1 !important;
+            filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.6));
+        }
+    </style>
+</head>
+<body class="text-gray-200 antialiased selection:bg-indigo-500/30">
+
+<div class="w-full max-w-[440px] min-h-screen bg-[#08090c] flex flex-col justify-between px-4 pt-4 pb-24 box-border relative overflow-x-hidden border-x border-white/[0.02]">
+    
+    <div id="core-app-runtime" class="w-full flex flex-col flex-grow box-border">
+        
+        <header class="w-full flex justify-between items-center mb-6 pt-1 box-border">
+            <button id="menu-open-btn" class="p-2.5 bg-white/[0.03] hover:bg-white/[0.07] active:scale-95 border border-white/5 rounded-xl cursor-pointer transition-all" onclick="toggleDrawer(true)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+            <div class="text-md font-bold tracking-[6px] text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">NEXUS</div>
+            <button class="p-2.5 bg-white/[0.03] border border-white/5 rounded-xl cursor-pointer" onclick="switchTab('wallet')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="12" y1="10" x2="12" y2="14"></line></svg>
+            </button>
+        </header>
+
+        <div id="menu-overlay" class="fixed inset-0 bg-black/70 opacity-0 pointer-events-none transition-opacity duration-300 z-50" onclick="toggleDrawer(false)"></div>
+        
+        <div id="menu-drawer" class="fixed top-0 left-0 h-full w-[280px] bg-[#0b0c10] border-r border-white/5 p-6 box-border transform -translate-x-full transition-transform duration-300 z-50 flex flex-col justify-between">
+            <div>
+                <div class="flex items-center gap-3 pb-5 border-b border-white/5">
+                    <div class="w-11 h-11 rounded-xl bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center shadow-inner">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    </div>
+                    <div class="overflow-hidden">
+                        <h3 id="menu-name" class="font-bold text-sm text-white tracking-wide truncate">Loading User...</h3>
+                        <p id="menu-email" class="text-[11px] text-gray-500 truncate max-w-[160px]">syncing auth state...</p>
+                    </div>
+                </div>
+                <nav class="flex flex-col gap-1 mt-5">
+                    <button class="w-full text-left py-3 px-4 rounded-xl text-xs font-semibold text-gray-400 hover:bg-white/5 hover:text-white flex items-center gap-3 transition-all cursor-pointer" onclick="switchTab('home')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                        Dashboard Hub
+                    </button>
+                    <button class="w-full text-left py-3 px-4 rounded-xl text-xs font-semibold text-gray-400 hover:bg-white/5 hover:text-white flex items-center gap-3 transition-all cursor-pointer" onclick="switchTab('tasks')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line></svg>
+                        Task Terminal
+                    </button>
+                </nav>
+            </div>
+            <button id="logout-btn" class="w-full bg-red-950/20 text-red-400 border border-red-900/20 py-2.5 rounded-xl text-xs font-bold cursor-pointer hover:bg-red-900/40 transition-all tracking-wider">
+                Disconnect Matrix Node
+            </button>
+        </div>
+
+        <main class="w-full flex-grow box-border">
+            
+            <section id="tab-home" class="tab-content w-full flex flex-col gap-5">
+                <div class="flex flex-col gap-0.5">
+                    <h2 class="text-xl font-bold tracking-tight text-white">Welcome Node, <span id="welcome-name" class="text-indigo-400">Guest</span>!</h2>
+                    <p class="text-xs text-gray-500">Ref Signature: <strong id="my-ref-code" class="text-purple-400 font-mono tracking-wider">--</strong></p>
+                </div>
+
+                <div class="w-full premium-glow rounded-2xl bg-gradient-to-b from-white/[0.02] to-transparent border border-white/[0.04] p-4 box-border">
+                    <div class="grid grid-cols-2 gap-3 w-full">
+                        <div class="p-3.5 rounded-xl bg-white/[0.01] border border-white/[0.02] flex flex-col justify-between">
+                            <span class="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Today Earnings</span>
+                            <span id="stat-today" class="text-xl font-bold text-emerald-400 mt-2 font-mono">₹0.00</span>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-white/[0.01] border border-white/[0.02] flex flex-col justify-between">
+                            <span class="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Total Revenue</span>
+                            <span id="stat-total" class="text-xl font-bold text-indigo-400 mt-2 font-mono">₹0.00</span>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-white/[0.01] border border-white/[0.02] flex flex-col justify-between">
+                            <span class="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Completed Node</span>
+                            <span id="stat-done" class="text-xl font-bold text-blue-400 mt-2 font-mono">0</span>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-white/[0.01] border border-white/[0.02] flex flex-col justify-between">
+                            <span class="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Pending Audit</span>
+                            <span id="stat-pending" class="text-xl font-bold text-amber-500 mt-2 font-mono">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.04] flex flex-col gap-2.5">
+                    <h3 class="text-xs font-bold tracking-wider text-gray-300 uppercase flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span> Network Propagation
+                    </h3>
+                    <p class="text-xs text-gray-500 leading-relaxed">Broadcast your system reference string link node array payload array to scale down secondary yield matrix.</p>
+                    <button id="copy-link-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl text-xs tracking-widest cursor-pointer transition-all active:scale-[0.99] mt-1 shadow-lg shadow-indigo-600/10">
+                        COPY LINK NODE ARRAY
+                    </button>
+                </div>
+            </section>
+
+            <section id="tab-tasks" class="tab-content w-full flex flex-col gap-4 hidden">
+                <div class="flex flex-col gap-0.5">
+                    <h2 class="text-xl font-bold tracking-tight text-white">Task Ecosystem</h2>
+                    <p class="text-xs text-gray-500">Execute authorized nodes to fetch structural payouts instantly.</p>
+                </div>
+                <div id="tasks-container" class="flex flex-col gap-3.5 mt-2">
+                    <div class="text-center py-6 text-xs text-gray-600 animate-pulse">Syncing encrypted task logs...</div>
+                </div>
+            </section>
+
+            <section id="tab-activity" class="tab-content w-full flex flex-col gap-4 hidden">
+                <div class="flex flex-col gap-0.5">
+                    <h2 class="text-xl font-bold tracking-tight text-white">System Logs Ledger</h2>
+                    <p class="text-xs text-gray-500">Monitor decentralized status validations on real-time channels.</p>
+                </div>
+                <div id="activity-container" class="flex flex-col gap-2.5 mt-2">
+                    <div class="text-center py-6 text-xs text-gray-600 animate-pulse">Establishing stream pipeline logs...</div>
+                </div>
+            </section>
+
+            <section id="tab-wallet" class="tab-content w-full flex flex-col gap-4 hidden">
+                <div class="p-6 rounded-2xl bg-gradient-to-br from-indigo-950/20 to-purple-950/10 border border-indigo-500/10 text-center premium-glow flex flex-col items-center">
+                    <span class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">Available Liquidity Vault</span>
+                    <h1 id="wallet-balance" class="text-3xl font-black text-emerald-400 mt-2 tracking-tight font-mono">₹0.00</h1>
+                </div>
+            </section>
+
+        </main>
+
+        <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[440px] bg-[#0c0e14]/80 backdrop-blur-lg border-t border-white/[0.04] py-3 px-6 flex justify-between items-center box-border z-40">
+            <button id="btn-home" class="nav-item active flex flex-col items-center gap-1.5 text-gray-500 hover:text-gray-300 transition-all cursor-pointer" onclick="switchTab('home')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                <span class="text-[9px] font-bold uppercase tracking-wider">Home</span>
+            </button>
+            <button id="btn-tasks" class="nav-item flex flex-col items-center gap-1.5 text-gray-500 hover:text-gray-300 transition-all cursor-pointer" onclick="switchTab('tasks')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line></svg>
+                <span class="text-[9px] font-bold uppercase tracking-wider">Tasks</span>
+            </button>
+            <button id="btn-activity" class="nav-item flex flex-col items-center gap-1.5 text-gray-500 hover:text-gray-300 transition-all cursor-pointer" onclick="switchTab('activity')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line></svg>
+                <span class="text-[9px] font-bold uppercase tracking-wider">Activity</span>
+            </button>
+            <button id="btn-wallet" class="nav-item flex flex-col items-center gap-1.5 text-gray-500 hover:text-gray-300 transition-all cursor-pointer" onclick="switchTab('wallet')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect></svg>
+                <span class="text-[9px] font-bold uppercase tracking-wider">Wallet</span>
+            </button>
+        </nav>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, collection, onSnapshot, setDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB9wfUyckilfi9k1utVJPBoUTg9i62GFGM",
+      authDomain: "nexus-94a75.firebaseapp.com",
+      projectId: "nexus-94a75",
+      storageBucket: "nexus-94a75.firebasestorage.app",
+      messagingSenderId: "817223121489",
+      appId: "1:817223121489:web:bf808da433ba87cbb95670",
+      measurementId: "G-KGDL0VWS01"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUid = null;
+    let unsubUser = null, unsubTasks = null, unsubActivity = null;
+
+    // 1. MOBILE SLIDING COMPACT DRAWER CONTROLLER
+    window.toggleDrawer = function(open) {
+        const drawer = document.getElementById('menu-drawer');
+        const overlay = document.getElementById('menu-overlay');
+        if (drawer && overlay) {
+            if (open) {
+                overlay.classList.add('opacity-100');
+                overlay.classList.remove('pointer-events-none');
+                drawer.classList.remove('-translate-x-full');
+            } else {
+                overlay.classList.remove('opacity-100');
+                overlay.classList.add('pointer-events-none');
+                drawer.classList.add('-translate-x-full');
+            }
+        }
+    };
+
+    // 2. LAYOUT VIEW MANAGER SWITCHER 
+    window.switchTab = function(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        const activeTab = document.getElementById('tab-' + tabId);
+        if(activeTab) activeTab.classList.remove('hidden');
+        
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        const activeBtn = document.getElementById('btn-' + tabId);
+        if(activeBtn) activeBtn.classList.add('active');
+        
+        window.toggleDrawer(false); // Close sliding drawer menu instantly on link navigation click 
+    };
+
+    // 3. CORE REALTIME DATA BINDINGS SYNC CHANNELS
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            currentUid = user.uid;
+            initRealtimeStreams(user.uid);
+        } else {
+            console.log("Token invalid. Session running standalone mode.");
+        }
+    });
+
+    function initRealtimeStreams(uid) {
+        if(unsubUser) unsubUser();
+        if(unsubTasks) unsubTasks();
+        if(unsubActivity) unsubActivity();
+
+        // STREAM A: USER CORE METRICS DATA 
+        unsubUser = onSnapshot(doc(db, "users", uid), (snap) => {
+            if(snap.exists()) {
+                const uData = snap.data();
+                if(document.getElementById('welcome-name')) document.getElementById('welcome-name').innerText = uData.fullName || 'User';
+                if(document.getElementById('my-ref-code')) document.getElementById('my-ref-code').innerText = uData.referralId || '--';
+                if(document.getElementById('stat-today')) document.getElementById('stat-today').innerText = "₹" + (uData.todayEarning ?? 0);
+                document.querySelectorAll('#stat-total').forEach(el => el.innerText = "₹" + (uData.totalEarning ?? 0));
+                if(document.getElementById('stat-done')) document.getElementById('stat-done').innerText = uData.completed ?? 0;
+                if(document.getElementById('stat-pending')) document.getElementById('stat-pending').innerText = uData.pending ?? 0;
+                if(document.getElementById('wallet-balance')) document.getElementById('wallet-balance').innerText = "₹" + (uData.walletBalance ?? 0);
+                if(document.getElementById('menu-name')) document.getElementById('menu-name').innerText = uData.fullName || 'User';
+                if(document.getElementById('menu-email')) document.getElementById('menu-email').innerText = uData.email || '---';
+            }
+        });
+
+        // STREAM B: TASK TERMINAL PARSER
+        unsubTasks = onSnapshot(collection(db, "tasks"), (querySnap) => {
+            const container = document.getElementById('tasks-container');
+            if(!container) return;
+            container.innerHTML = "";
+
+            if(querySnap.empty) {
+                container.innerHTML = `<p class="text-xs text-gray-500 text-center py-6">No tasks published onto the active ledger.</p>`;
+                return;
+            }
+
+            querySnap.forEach((taskDoc) => {
+                const task = taskDoc.data();
+                const taskId = taskDoc.id;
+
+                const card = document.createElement('div');
+                card.className = "p-4 rounded-xl bg-white/[0.01] border border-white/[0.03] flex flex-col gap-2 transition-all";
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <h4 class="text-xs font-bold text-gray-200 uppercase tracking-wide">${task.title || 'Assignment Document'}</h4>
+                        <span class="text-xs font-bold text-emerald-400 font-mono">₹${task.reward || 0}</span>
+                    </div>
+                    <p class="text-[11px] text-gray-500 leading-normal">${task.description || 'Initialize task node script to parse structural workflow instructions.'}</p>
+                    <div id="action-zone-${taskId}" class="mt-1">
+                        <button class="w-full bg-indigo-600/10 hover:bg-indigo-600 border border-indigo-500/20 text-indigo-400 hover:text-white py-2 rounded-xl text-[11px] font-bold tracking-widest transition-all cursor-pointer uppercase" onclick="processTaskLifecycle('${taskId}', '${task.title}', ${task.reward || 0})">
+                            Shuru Karein
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        });
+
+        // STREAM C: AUDIT ACTIVITY LOGS STREAM (Realtime Life Cycle Engine Matrix)
+        unsubActivity = onSnapshot(collection(db, "activity"), (querySnap) => {
+            const container = document.getElementById('activity-container');
+            if(!container) return;
+            container.innerHTML = "";
+
+            const userLogs = [];
+            querySnap.forEach((doc) => {
+                if(doc.data().uid === uid) userLogs.push({id: doc.id, ...doc.data()});
+            });
+
+            if(userLogs.length === 0) {
+                container.innerHTML = `<p class="text-xs text-gray-600 text-center py-6">No active operation traces linked with this user node.</p>`;
+                return;
+            }
+
+            userLogs.sort((a,b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+
+            userLogs.forEach((log) => {
+                let badgeStyle = "bg-amber-500/10 text-amber-400 border-amber-500/20"; 
+                if(log.status === 'processing') badgeStyle = "bg-blue-500/10 text-blue-400 border-blue-500/20";
+                if(log.status === 'complete') badgeStyle = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+
+                const logItem = document.createElement('div');
+                logItem.className = "p-3.5 rounded-xl bg-white/[0.01] border border-white/[0.02] flex justify-between items-center box-border";
+                logItem.innerHTML = `
+                    <div class="flex flex-col gap-0.5 overflow-hidden pr-2">
+                        <span class="text-xs font-semibold text-gray-300 truncate">${log.taskTitle}</span>
+                        <span class="text-[10px] text-gray-500 font-mono">Value Vector: ₹${log.reward}</span>
+                    </div>
+                    <span class="text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border ${badgeStyle}">
+                        ${log.status}
+                    </span>
+                `;
+                container.appendChild(logItem);
+            });
+        });
+    }
+
+    // 4. TASK STAGES OPERATIONS EXECUTION CHAIN (Realtime Lifecycles Handler)
+    window.processTaskLifecycle = async function(taskId, taskTitle, reward) {
+        if(!currentUid) return alert("Security Token Disconnect State.");
+        const zone = document.getElementById(`action-zone-${taskId}`);
+        const uniqueActivityId = `${currentUid}_${taskId}`;
+
+        try {
+            // STEP 1: Set Document to 'pending' state
+            await setDoc(doc(db, "activity", uniqueActivityId), {
+                uid: currentUid,
+                taskId: taskId,
+                taskTitle: taskTitle,
+                reward: reward,
+                status: "pending",
+                timestamp: serverTimestamp()
+            });
+
+            if(zone) {
+                zone.innerHTML = `
+                    <button class="w-full bg-amber-500/10 hover:bg-amber-500 border border-amber-500/20 text-amber-400 hover:text-white py-2 rounded-xl text-[11px] font-bold tracking-widest transition-all cursor-pointer uppercase" onclick="submitTaskForVerification('${taskId}')">
+                        Pura Karein
+                    </button>
+                `;
+            }
+            window.switchTab('activity');
+        } catch(e) {
+            console.error("Lifecycle failure:", e);
+        }
+    };
+
+    window.submitTaskForVerification = async function(taskId) {
+        if(!currentUid) return;
+        const uniqueActivityId = `${currentUid}_${taskId}`;
+        const zone = document.getElementById(`action-zone-${taskId}`);
+
+        try {
+            // STEP 2: Update Document to 'processing' (Awaiting Admin verification inside console)
+            await updateDoc(doc(db, "activity", uniqueActivityId), {
+                status: "processing"
+            });
+
+            if(zone) {
+                zone.innerHTML = `
+                    <span class="block w-full text-center bg-blue-500/5 border border-blue-500/10 text-blue-400 py-2 rounded-xl text-[11px] font-semibold uppercase tracking-wider">
+                        Awaiting Admin Nod
+                    </span>
+                `;
+            }
+            alert("Verification ticket deployed onto Admin network array.");
+            window.switchTab('activity');
+        } catch(e) {
+            console.error("Transmission breakdown:", e);
+        }
+    };
+
+    // HARDWARE COMPONENT DOM MOUNTED RUNTIME LOGICS
+    document.addEventListener("DOMContentLoaded", () => {
+        const copyBtn = document.getElementById('copy-link-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        if (copyBtn) {
+            copyBtn.addEventListener('click', () => {
+                const refElement = document.getElementById('my-ref-code');
+                const currentRef = refElement ? refElement.innerText : '--';
+                const copyTarget = window.location.origin + window.location.pathname + "?ref=" + currentRef;
+                navigator.clipboard.writeText(copyTarget).then(() => alert("System Reference Array Copied! 🚀"));
+            });
+        }
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                if (unsubUser) unsubUser();
+                if (unsubTasks) unsubTasks();
+                if (unsubActivity) unsubActivity();
+                signOut(auth).then(() => alert("Session Closed Successfully."));
+            });
+        }
+    });
+</script>
+</body>
+</html>
